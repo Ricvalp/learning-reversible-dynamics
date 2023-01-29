@@ -1,5 +1,6 @@
-# Learning Reversible Symplectic Dynamics
+# Learning Reversible Symplectic Dynamics (JAX)
 
+## JAX implementation of [time-reversible neural networks](https://arxiv.org/abs/2204.12323).
 ## 
 ## To train the model run 
 
