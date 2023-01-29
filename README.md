@@ -2,8 +2,6 @@
 
 ## JAX implementation of [time-reversible neural networks](https://arxiv.org/abs/2204.12323).
 
-### jax_env.yml provides the dependencies.
-
 ## To train the model run 
 
 ```console
