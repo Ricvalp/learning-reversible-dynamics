@@ -213,7 +213,6 @@ class HenonLayer(nn.Module):
             return X - Y - ETA + V
 
 
-
 ### ### ### models ### ### ###
 
 def generate_mask(i, d):
@@ -265,7 +264,6 @@ def create_henon_layer(num_hidden):
     hanon_layer = HenonLayer(V)
 
     return hanon_layer
-
 
 
 ### ### ### training ### ### ###
@@ -334,7 +332,6 @@ def train_model(state, train_data_loader, eval_data_loader, check_every=20, num_
     return state, loss, eval_loss
 
 
-
 ### ### ### trainer ### ### ###
 
 class TrainerModule:
@@ -350,6 +347,7 @@ class TrainerModule:
                     decay_rate = 0.01,
                     transition_steps = 1e06,
                     lr=1e-4,
+                    end_lr = 1e-05,
                     wandb_log = "no",
                     seed=42):
 
@@ -367,6 +365,7 @@ class TrainerModule:
         self.decay_rate = decay_rate
         self.wandb_log = wandb_log
         self.transition_steps = transition_steps
+        self.end_lr = end_lr
 
         # Create model
         self.model = create_henon_flow(N=self.N, num_hidden=self.num_hidden, d=self.d)
@@ -426,7 +425,7 @@ class TrainerModule:
         # EXPONENTIAL DECAY LEARNING RATE
         init_learning_rate = self.lr # initial learning rate for Adam
         exponential_decay_scheduler = optax.exponential_decay(init_value=init_learning_rate, transition_steps=self.transition_steps,
-                                                            decay_rate=self.decay_rate, transition_begin=50,
+                                                            decay_rate=self.decay_rate, transition_begin=50,  end_value=self.end_lr,
                                                             staircase=False)
         optimizer = optax.adam(learning_rate=exponential_decay_scheduler)
 
@@ -501,6 +500,9 @@ class TrainerModule:
     def get_model(self):
 
         return self.model
+
+
+
 
 """
 ### ### ### plot ### ### ###

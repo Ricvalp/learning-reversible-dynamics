@@ -40,10 +40,6 @@ parser.add_argument("num_hidden", type=int,
 
 ### ### ###
 
-parser.add_argument("--p_per_q", type=int,
-                    help="number of momenta resampled per point in the dataset: 5",
-                    default=5)
-
 parser.add_argument("--batch_size", type=int,
                     help="batch_size: 500",
                     default=500)
@@ -100,6 +96,10 @@ parser.add_argument("--overwite_checkpoint", type=bool,
                     help="if True overwites existing checkpoints with same model name",
                     default=True)
 
+parser.add_argument("--end_lr", type=float,
+                    help="optax exponential decay end learning rate: 1e-05",
+                    default=1e-05)
+
 
 args = parser.parse_args()
 
@@ -126,6 +126,7 @@ train_lines = args.train_lines
 num_lines = args.num_lines
 d = args.d
 decay_rate = args.decay_rate
+end_lr = args.end_lr
 
 if wandb_log=="yes":
         wandb.init(project=project_name, name=model_name, config = {
@@ -147,8 +148,8 @@ if wandb_log=="yes":
 train_dataset = ai.Dataset(train_lines=train_lines, num_lines=num_lines, u0_path=u0_path, T_path=T_path, train=True)
 val_dataset = ai.Dataset(train_lines=train_lines, num_lines=num_lines, u0_path=u0_path, T_path=T_path, train=False)
 
-train_loader = data.DataLoader(train_dataset, batch_size=train_lines, shuffle=True, collate_fn=ai.numpy_collate)
-val_loader = data.DataLoader(val_dataset, batch_size=num_lines-train_lines, shuffle=True, collate_fn=ai.numpy_collate)
+train_loader = data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, collate_fn=ai.numpy_collate)
+val_loader = data.DataLoader(val_dataset, batch_size=num_lines-batch_size, shuffle=True, collate_fn=ai.numpy_collate)
 
 data_inputs, data_outputs = next(iter(train_loader))
 
@@ -171,6 +172,7 @@ trainer = ai.TrainerModule(model_name=model_name,
                                 lr=lr,
                                 decay_rate=decay_rate,
                                 wandb_log=wandb_log,
+                                end_lr = end_lr,
                                 seed=seed)
 
 trainer.train_model(num_epochs=num_epochs)
