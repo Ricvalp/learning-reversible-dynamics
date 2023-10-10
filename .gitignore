@@ -9,6 +9,8 @@ __pycache__/
 checkpoints
 .precommit-config.yaml
 wandb
+visualizations
+checkpoints
 
 # Distribution / packaging
 .Python
