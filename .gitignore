@@ -11,6 +11,7 @@ checkpoints
 wandb
 visualizations
 checkpoints
+.vscode
 
 # Distribution / packaging
 .Python
