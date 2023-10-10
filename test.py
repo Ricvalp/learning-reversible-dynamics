@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import jax
+import jax.numpy as jnp
 import matplotlib.pyplot as plt
 import torch.utils.data as data
 import wandb
@@ -11,13 +13,12 @@ from dataset.dataset import Dataset
 from dataset.utils import numpy_collate
 from trainer import TrainerModule
 
-_CFG_FILE = config_flags.DEFINE_config_file("config", default="config/config.py:train")
+_CFG_FILE = config_flags.DEFINE_config_file("config", default="config/config.py:test")
 
 
 def main(_):
     cfg = load_cfgs(_CFG_FILE)
     checkpoint_dir = Path(cfg.checkpoint_dir)
-    checkpoint_dir.mkdir(parents=True, exist_ok=cfg.overwite_checkpoint)
     vis_folder = Path(cfg.experiment_dir) / Path(f"{cfg.model_name}")
     vis_folder.mkdir(parents=True, exist_ok=True)
 
@@ -55,15 +56,6 @@ def main(_):
         collate_fn=numpy_collate,
     )
 
-    data_inputs, data_outputs = next(iter(train_loader))
-
-    plt.figure(figsize=(8, 8))
-    plt.scatter([x[0] for x in data_inputs], [x[1] for x in data_inputs], c="r", label="x")
-    plt.scatter([x[0] for x in data_outputs], [x[1] for x in data_outputs], c="b", label="T(x)")
-    plt.legend()
-    plt.savefig(vis_folder / Path("train_data.png"))
-    plt.show()
-
     trainer = TrainerModule(
         model_name=cfg.model_name,
         num_layers_flow=cfg.model.num_layers_flow,
@@ -80,7 +72,25 @@ def main(_):
         seed=cfg.seed,
     )
 
-    trainer.train_model(num_epochs=cfg.train.num_epochs)
+    trainer.load_checkpoint()
+
+    @jax.jit
+    def run_flow(x):
+        return trainer.forward(x)
+
+    predictions = [
+        jnp.array([[0.0, i * 0.05] for i in range(10)] + [[i * 0.06, 0.0] for i in range(10)])
+    ]
+
+    for _ in range(30):
+        predictions.append(run_flow(predictions[-1]))
+
+    plt.figure(figsize=(8, 8))
+    for pred in predictions:
+        plt.scatter([x[0] for x in pred], [x[1] for x in pred], c="r", s=0.1)
+    plt.scatter([x[0] for x in predictions[0]], [x[1] for x in predictions[0]], c="b")
+    plt.savefig(vis_folder / Path("predictions.png"))
+    plt.show()
 
 
 if __name__ == "__main__":

@@ -1,0 +1,28 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "train",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/train.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["--config=config/config.py:train", "--config.wandb.wandb_log=True"],
+            "env": {"DATA_PATH":"/home/riccardo/data", "PYTHONPATH": "${workspaceFolder}"}
+        },
+        {
+            "name": "test",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/test.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["--config=config/config.py:test_last", "--config.wandb.wandb_log=False"],
+            "env": {"DATA_PATH":"/home/riccardo/data", "PYTHONPATH": "${workspaceFolder}"}
+        },
+    ]
+}
