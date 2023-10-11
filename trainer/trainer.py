@@ -1,4 +1,5 @@
 import pickle
+import sys
 from pathlib import Path
 
 import jax
@@ -6,6 +7,7 @@ import jax.numpy as jnp
 import optax
 import wandb
 from flax.training import train_state
+from tqdm import tqdm
 
 from models.HenonFlow import create_henon_flow
 
@@ -128,10 +130,10 @@ class TrainerModule:
         )
 
     def train_model(self, num_epochs=50):
-        for epoch_idx in range(1, num_epochs + 1):
+        t = tqdm(range(1, num_epochs + 1), unit="step")
+        for epoch_idx in t:
             loss = self.train_epoch()
-
-            print("epoch: ", epoch_idx, ", loss : ", loss)
+            t.set_description(f"loss: {loss:.6f}")
 
             # Saving checkpoint every 10 epochs if validation loss improves
             if epoch_idx % 10 == 0:

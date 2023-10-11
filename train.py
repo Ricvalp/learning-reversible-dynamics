@@ -58,6 +58,7 @@ def main(_):
     data_inputs, data_outputs = next(iter(train_loader))
 
     plt.figure(figsize=(8, 8))
+    plt.title("Training data", fontsize=20)
     plt.scatter([x[0] for x in data_inputs], [x[1] for x in data_inputs], c="r", label="x")
     plt.scatter([x[0] for x in data_outputs], [x[1] for x in data_outputs], c="b", label="T(x)")
     plt.legend()

@@ -1,0 +1,4 @@
+flax
+matplotlib
+ml_collections
+tqdm
