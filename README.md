@@ -65,9 +65,7 @@ These are all the packages used to run.
 
 Consider the time-periodic Hamiltonian
 
-$
-H(p, q, t) = \frac{1}{2} p^2 - \nu^2 \cos(q) - \lambda \left[ 0.3pq \sin(2t) + 0.7pq \sin(3t) \right]
-$
+$$H(p, q, t) = \frac{1}{2} p^2 - \nu^2 \cos(q) - \lambda \left[ 0.3pq \sin(2t) + 0.7pq \sin(3t) \right]$$
 
 
 This Hamiltonian represents a simple pendulum with natural frequency ν driven by a $2π$-periodic force. The time-$2π$ map of this system defined by the flow $Φ\_{2π}$ is usually also referred to as a Poincaré map as one could view time as an augmented phase space coordinate and $t = 2π$ can be considered a surface of section in the extended phase space $(p, q, t)$. A Poincar´e plot of     this map is depicted in the figure.
